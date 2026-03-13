@@ -8,6 +8,6 @@ fun initKoin(config: KoinAppDeclaration? = null) {
     startKoin {
         config?.invoke(this)
         androidLogger()
-        modules(sharedModule)
+        modules(viewModelModule)
     }
 }
