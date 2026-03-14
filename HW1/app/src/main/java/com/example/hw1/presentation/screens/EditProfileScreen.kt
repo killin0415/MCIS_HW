@@ -36,7 +36,7 @@ fun EditProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Setting") },
+                title = { Text("Edit") },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackClick
