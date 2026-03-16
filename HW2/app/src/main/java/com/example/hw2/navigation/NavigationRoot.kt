@@ -1,0 +1,55 @@
+package com.example.hw2.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun NavigationRoot(
+    modifier: Modifier = Modifier
+) {
+    val navigationState = rememberNavigationState(
+        startRoute = Route.TodoList,
+        topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
+    )
+    val navigator = remember {
+        Navigator(navigationState)
+    }
+    val backStack = rememberNavBackStack(
+        configuration = SavedStateConfiguration {
+            serializersModule = SerializersModule {
+                polymorphic(NavKey::class) {
+
+                }
+            }
+        },
+        Route.Main
+    )
+    val resultStore = rememberResultStore()
+    NavDisplay(
+        modifier = modifier,
+        backStack = backStack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
+        entryProvider = { key ->
+            when (key) {
+
+
+                else -> error("Unknown NavKey: $key")
+            }
+        }
+    )
+}
