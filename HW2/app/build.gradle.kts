@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core.android)
     implementation(libs.androidx.compose.material.icons.extended.android)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3.android)
+    implementation(libs.androidx.compose.adaptive.navigation3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
