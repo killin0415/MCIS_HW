@@ -21,6 +21,7 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
 class NavigationState(
     val startRoute: NavKey,
@@ -70,7 +71,9 @@ fun rememberNavigationState(
 val serializersConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
-
+            subclass(Route.BookList::class, Route.BookList.serializer())
+            subclass(Route.Favorites::class, Route.Favorites.serializer())
+            subclass(Route.BookDetail::class, Route.BookDetail.serializer())
         }
     }
 }
