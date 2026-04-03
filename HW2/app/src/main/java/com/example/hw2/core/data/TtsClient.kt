@@ -33,7 +33,16 @@ class TtsClient {
                     val wavBase64 = response.optString("bytes", "")
                     if (wavBase64.isEmpty()) return@withContext null
 
-                    val wavBytes = Base64.decode(wavBase64, Base64.DEFAULT)
+                    val cleanBase64 = wavBase64.replace("-", "+").replace("_", "/").replace(Regex("\\s+"), "")
+                    val wavBytes = try {
+                        Base64.decode(cleanBase64, Base64.DEFAULT)
+                    } catch (e: IllegalArgumentException) {
+                        e.printStackTrace()
+                        println("TTS Server returned bad base-64: ${wavBase64.take(200)}")
+                        null
+                    }
+                    if (wavBytes == null) return@withContext null
+
                     val outputFile = File.createTempFile("tts_out", ".wav")
                     outputFile.writeBytes(wavBytes)
 

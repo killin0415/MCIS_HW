@@ -10,13 +10,32 @@ class AudioPlayerManager {
     suspend fun play(filePath: String) {
         withContext(Dispatchers.Main) {
             stop()
-            player = MediaPlayer().apply {
-                setDataSource(filePath)
-                prepare()
-                start()
-                setOnCompletionListener {
-                    it.release()
-                    player = null
+            kotlinx.coroutines.suspendCancellableCoroutine<Unit> { continuation ->
+                try {
+                    player = MediaPlayer().apply {
+                        java.io.FileInputStream(filePath).use { fis ->
+                            setDataSource(fis.fd)
+                        }
+                        prepare()
+                        start()
+                        setOnCompletionListener { mp ->
+                            mp.release()
+                            player = null
+                            if (continuation.isActive) continuation.resumeWith(Result.success(Unit))
+                        }
+                        setOnErrorListener { mp, _, _ ->
+                            mp.release()
+                            player = null
+                            if (continuation.isActive) continuation.resumeWith(Result.failure(RuntimeException("MediaPlayer error")))
+                            true
+                        }
+                    }
+                } catch (e: Exception) {
+                    if (continuation.isActive) continuation.resumeWith(Result.failure(e))
+                }
+                
+                continuation.invokeOnCancellation {
+                    stop()
                 }
             }
         }

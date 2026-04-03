@@ -67,7 +67,10 @@ class BookDetailViewModel(
         }
 
         val book = _state.value.book ?: return
-        val textToSpeak = book.description?.takeIf { it.isNotBlank() } ?: book.title
+        var textToSpeak = book.description?.takeIf { it.isNotBlank() } ?: book.title
+        if (textToSpeak.length > 150) {
+            textToSpeak = textToSpeak.take(150) + "..."
+        }
 
         viewModelScope.launch {
             _state.update { it.copy(isSpeaking = true) }

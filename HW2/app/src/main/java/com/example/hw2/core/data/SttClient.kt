@@ -24,7 +24,7 @@ class SttClient(
             val requestBody = """
                 {
                     "audio": "$base64Audio",
-                    "lang": "TA and ZH Medical V1",
+                    "lang": "English",
                     "source": "人本and多語",
                     "timestamp": false
                 }
